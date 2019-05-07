@@ -46,7 +46,11 @@ class _MyAppState extends State<MyApp> {
     String result;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      result = await GeetestPlugin.getGeetest('http://www.geetest.com/demo/gt/register-slide');
+      result = await GeetestPlugin.getGeetest(
+        gt: 'a',
+        challenge: 'b',
+        success: 1,
+      );
     } on PlatformException {
 //      platformVersion = 'Failed to get platform version.';
     }

@@ -1,7 +1,7 @@
 #import "GeetestPlugin.h"
 
 //网站主部署的用于验证注册的接口 (api_1)
-//#define api_1 @""
+#define api_1 @""
 //网站主部署的二次验证的接口 (api_2)
 #define api_2 @"https://www.geetest.com/demo/gt/validate-slide"
 
@@ -39,9 +39,15 @@
     result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
   } else if ([@"getGeetest" isEqualToString:call.method]) {
       NSDictionary *arguments = [call arguments];
-      api1 = arguments[@"key"];
+    //   api1 = arguments[@"key"];
       _eventResult = result;
-      [self.manager registerCaptcha:nil];
+      
+      NSString *geetest_id = [arguments objectForKey:@"gt"];
+        NSString *geetest_challenge = [arguments objectForKey:@"challenge"];
+        NSNumber *geetest_success = [arguments objectForKey:@"success"];
+        // 不要重复调用
+        [self.manager configureGTest:geetest_id challenge:geetest_challenge success:geetest_success withAPI2:api_2];
+        [self.manager registerCaptcha:nil];
       [self.manager disableBackgroundUserInteraction:YES];
       [self.manager startGTCaptchaWithAnimated:YES];
   }else {
@@ -95,6 +101,10 @@
     NSString *myResult = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
     _eventResult(myResult);
     _eventResult = nil;
+}
+
+- (BOOL)shouldUseDefaultRegisterAPI:(GT3CaptchaManager *)manager {
+    return NO;
 }
 
 - (BOOL)shouldUseDefaultSecondaryValidate:(GT3CaptchaManager *)manager {

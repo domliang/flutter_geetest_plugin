@@ -10,9 +10,13 @@ class GeetestPlugin {
     return version;
   }
 
-  static Future<String> getGeetest(String url) async {
+  static Future<String> getGeetest(
+      {String gt, String challenge, int success}) async {
     final Map<String, dynamic> params = <String, dynamic>{
-      'key': url,
+      // 'key': url,
+      'gt': gt,
+      'challenge': challenge,
+      'success': success,
     };
     final String result = await _channel.invokeMethod('getGeetest', params);
     return result;
